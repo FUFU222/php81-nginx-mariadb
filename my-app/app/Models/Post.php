@@ -5,11 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Post extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 
     public function createPost($data)
     {
@@ -149,5 +161,45 @@ class Post extends Model
     {
         $posts = Post::all();
         return $posts;
+    }
+
+    public function getPostWithEloquentById($id)
+    {
+        $posts = Post::find($id);
+        $posts->tags;
+        return $posts;
+    }
+
+    public function getTrashedPostWithEloquent()
+    {
+        $posts = Post::onlyTrashed()->get();
+        return $posts;
+    }
+
+
+    public function createPostWithEloquent($data)
+    {
+        $post = new Post;
+        $post->user_id = $data->user_id;
+        $post->title = $data->title;
+        $post->body = $data->body;
+        $post->save();
+        return $post;
+    }
+
+    public function updatePostWithEloquent($data)
+    {
+        $post = Post::find($data->id);
+        $post->title = $data->title;
+        $post->body = $data->body;
+        $post->save();
+        return $post;
+    }
+
+    public function deletePostWithEloquent($id)
+    {
+        $post = Post::find($id);
+        $post->delete();
+        return $post;
     }
 }

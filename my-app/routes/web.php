@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Providers\RouteServiceProvider;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,11 @@ use App\Providers\RouteServiceProvider;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/user/{id}', User::class .
+'@getUserById');
+
 
 
 Route::get('/posts',
@@ -89,4 +95,39 @@ Route::get(
 Route::get(
     '/posts/show/querybuilder/subquery',
     [PostController::class, 'getPostWithQueryBuilderBySubQuery']
+);
+
+Route::get(
+    '/posts/show/eloquent',
+    [PostController::class, 'getPostWithEloquent']
+);
+
+Route::get(
+    '/posts/show/eloquent/{id}',
+    [PostController::class, 'getPostWithEloquentById']
+);
+
+Route::get(
+    '/posts/show/eloquent/{id}',
+    [PostController::class, 'getPostWithEloquentById']
+);
+
+Route::get(
+    '/posts/trashed',
+    [PostController::class, 'getTrashedPostWithEloquent']
+);
+
+Route::post(
+    '/posts/create/eloquent',
+    [PostController::class, 'createPostWithEloquent']
+);
+
+Route::post(
+    '/posts/update/eloquent',
+    [PostController::class, 'updatePostWithEloquent']
+);
+
+Route::post(
+    'posts/delete/eloquent/{id}',
+    [PostController::class, 'deletePostWithEloquent']
 );

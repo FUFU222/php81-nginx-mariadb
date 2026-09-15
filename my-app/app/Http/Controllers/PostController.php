@@ -81,6 +81,19 @@ class PostController extends Controller
         $post = new Post();
         $post->createPostWithQueryBuilder($dummyData);
     }
+ 
+    public function createPostWithEloquent()
+    {
+        $dummyData = (object)[
+            'user_id' => 1,
+            'title' => 'Eloquentの新しい投稿',
+            'body' => 'Eloquentの新しい投稿の内容',
+        ];
+        $post = new Post();
+        $posts = $post->createPostWithEloquent($dummyData);
+    }
+
+
 
     public function getPostWithQueryBuilder()
     {
@@ -112,6 +125,19 @@ class PostController extends Controller
         $post->updatePostWithNormalSql($dummyData);
     }
 
+    public function updatePostWithEloquent()
+    {
+        $dummyData = (object)[
+            'id' => 16,
+            'title' => 'Eloquentで更新された投稿',
+            'body' => 'Eloquentで更新された内容',
+        ];
+        $pots = new Post();
+        $pots->updatePostWithEloquent($dummyData);
+    }
+
+
+
     public function deletePostWithNormalSql()
     {
         $dummyData = (object)[
@@ -129,6 +155,14 @@ class PostController extends Controller
         $post = new Post();
         $post->deletePostWithQueryBuilder($dummyData);
     }
+
+    public function deletePostWithEloquent(int$id)
+    {
+        $post = new Post();
+        $post->deletePostWithEloquent($id);
+    }
+
+
 
     public function getPostWithQueryBuilderByFilter()
     {
@@ -155,6 +189,21 @@ class PostController extends Controller
     {
         $post = new Post();
         $posts = $post->getPostWithQueryBuilderBySubQuery();
+        return $posts;
+    }
+
+    public function getPostWithEloquentById($id)
+    {
+        $id = $id;
+        $post = new Post();
+        $posts = $post->getPostWithEloquentById($id);
+        return $posts;
+    }
+
+    public function getTrashedPostWithEloquent()
+    {
+        $post = new Post();
+        $posts = $post->getTrashedPostWithEloquent();
         return $posts;
     }
 }
