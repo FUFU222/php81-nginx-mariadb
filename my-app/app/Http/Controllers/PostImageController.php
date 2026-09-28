@@ -11,6 +11,8 @@ class PostImageController extends Controller
 {
     public function store(Request $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         if (!$request->hasFile('images')) {
             return;
         }

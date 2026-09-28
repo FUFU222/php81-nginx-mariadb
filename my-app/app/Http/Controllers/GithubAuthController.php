@@ -32,14 +32,18 @@ class GithubAuthController extends Controller
             ->first();
 
         if ($user) {
-            if (! $user->github_id) {
-                $user->update(['github_id' => $githubUser->getId()]);
-            }
+            // GitHubがメールアドレスの所有権を検証済みのため、未認証のままなら認証済みにする
+            // (これをしないとメール認証コマンドが対象から外れず送信し続けてしまう)
+            $user->update([
+                'github_id' => $user->github_id ?? $githubUser->getId(),
+                'email_verified_at' => $user->email_verified_at ?? now(),
+            ]);
         } else {
             $user = User::create([
                 'name' => $githubUser->getName() ?? $githubUser->getNickname(),
                 'email' => $githubUser->getEmail(),
                 'github_id' => $githubUser->getId(),
+                'email_verified_at' => now(),
                 'password' => Hash::make(Str::random(32)),
             ]);
         }

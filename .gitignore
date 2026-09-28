@@ -1,3 +1,4 @@
 docker-config/mariadb/data/
 .claude/
 *.bak_*
+.env
