@@ -16,11 +16,17 @@ class PostImage extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function saveImage($data): PostImage
+    public function saveImage($image, int $postId): PostImage
     {
+        $image->validate([
+            'images.*' => 'required|file|image|mimes:jpeg,png,jpg,gif'
+        ]);
+
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $image->move(public_path('images'), $imageName);
         $postImage = new PostImage();
-        $postImage->post_id = $data['post_id'];
-        $postImage->url = $data('url');
+        $postImage->post_id = $postId;
+        $postImage->url = 'images/'. $imageName;
         $postImage->save();
         return $postImage;
     }

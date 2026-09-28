@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Http\Requests\CreatePostRequest;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('postImages')->get();
+        $posts = Post::with(['postImages', 'user'])->get();
         return view('posts.index', ['posts' => $posts]);
     }
 
@@ -18,13 +19,8 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        $request->validate([
-            'title' => 'required | string | max:255',
-            'body' => 'required | string',
-        ]);
-
         $post = new Post;
         $result = $post->createPost($request->all());
 
@@ -43,15 +39,23 @@ class PostController extends Controller
     public function edit(int $id)
     {
         $post = Post::findOrFail($id);
+
+        $this->authorize('update', $post);
+        //Policyの適用
+
         return view('posts.edit', ['post' => $post]);
     }
 
     public function update(Request $request, int $id)
     {
-        $request->validate([
-            'title' => 'required | string | max:255',
-            'body' => 'required | string',
-        ]);
+
+        // データの存在有無を確認
+        try {
+            Post::findOrFail($id);
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => '指定された投稿が見つかりません']);
+        }
 
         $post = new Post;
         $result = $post->updatePost($request->all(), $id);
@@ -65,6 +69,13 @@ class PostController extends Controller
 
     public function delete(int $id)
     {
+        // データの存在有無を確認
+        try {
+            Post::findOrFail($id);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => '指定された投稿が見つかりません']);
+        }
+
         $post = new Post();
         $result = $post->deletePost($id);
         return redirect()->route('posts.index')->with('toast', ['type' => 'deleted', 'message' => '投稿を削除しました']);

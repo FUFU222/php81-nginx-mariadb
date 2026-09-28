@@ -1,8 +1,11 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            投稿編集
+        </h2>
+    </x-slot>
 
-@section('title', '投稿編集')
-
-@section('content')
+    <div class="py-6">
     <div class="max-w-lg mx-auto my-8 px-4">
         <div class="text-left mb-2">
             <a href="{{ route('post.show', ['post' => $post]) }}"
@@ -57,4 +60,5 @@
             </form>
         </div>
     </div>
-@endsection
+    </div>
+</x-app-layout>

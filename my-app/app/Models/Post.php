@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 
 class Post extends Model
@@ -35,10 +36,10 @@ class Post extends Model
 
     public function createPost($data): Post
     {
-        $user_id = 1;
+        $user = Auth::user();
 
         $post = new Post;
-        $post->user_id = $user_id;
+        $post->user_id = $user->id;
         $post->title = $data['title'];
         $post->body = $data['body'];
         $post->save();
@@ -47,7 +48,7 @@ class Post extends Model
 
     public function updatePost($data, $id): Post
     {
-        $post = Post::find($id);
+        $post = Post::findOrFail($id);
         $post->title = $data['title'];
         $post->body = $data['body'];
         $post->save();
